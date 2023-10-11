@@ -50,8 +50,11 @@ int main(int argc, char const *argv[])
   }
 
   /* Send data to server. */
-  char *hello = "Hello from client";
-  send(client_fd, hello, strlen(hello), 0);
+  char message[100];
+  printf("Enter your message: ");
+  fgets(message, sizeof(message), stdin);
+
+  send(client_fd, message, strlen(message), 0);
 
   /* Read and print data from server. */
   char buffer[1024] = {0};

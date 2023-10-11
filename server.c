@@ -37,6 +37,14 @@ int main(int argc, char const *argv[])
   int addrlen = sizeof(address);
   struct sockaddr *addr_ptr = (struct sockaddr *)&address;
 
+  /* Forcefully attach socket to port */
+  int opt = 1;
+  if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
+  {
+    perror("setsockopt");
+    exit(EXIT_FAILURE);
+  }
+
   /*  Bind the socket to the address and port number. */
   if (bind(server_fd, addr_ptr, addrlen) < 0)
   {
@@ -75,8 +83,11 @@ int main(int argc, char const *argv[])
   printf("%s\n", buffer);
 
   /* Send data to client. */
-  char *response = "Hello from server";
-  send(connection_fd, response, strlen(response), 0);
+  char message[100];
+  printf("Enter your response: ");
+  fgets(message, sizeof(message), stdin);
+
+  send(connection_fd, message, strlen(message), 0);
 
   /* Close connection between client and server. */
   close(connection_fd);
